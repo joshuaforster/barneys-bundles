@@ -7,7 +7,8 @@ import {
 import type { Product } from '../types'
 import { fmt, fmtDate, BB_COLOR, COMP_COLOR } from '../types'
 
-const API = 'http://127.0.0.1:8000'
+
+const API = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
 interface TipPayload { payload: { name: string; count: number; isJonny: boolean } }
 interface TipProps { active?: boolean; payload?: TipPayload[] }
@@ -53,7 +54,7 @@ export default function Changes() {
       fetch(`${API}/price-changes`, { signal: ac.signal }).then(r => r.json() as Promise<Product[]>),
       fetch(`${API}/competitors`, { signal: ac.signal }).then(r => r.json() as Promise<string[]>),
     ]).then(([ch, comps]) => {
-      setChanges(ch); setCompetitors(comps.filter(c => c !== 'Barneys Bundles')); setLoading(false)
+      setChanges(ch); setCompetitors(comps); setLoading(false)
     }).catch(err => { if (err.name !== 'AbortError') { setError(String(err.message)); setLoading(false) } })
     return () => ac.abort()
   }, [])
