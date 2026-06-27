@@ -1,7 +1,9 @@
 import requests
 
+
+
 def fetch_products(shop_url):
-    response = requests.get(f"{shop_url}/products.json")
+    response = requests.get(f"{shop_url}/products.json?limit=500")
     return response.json()
 
 
@@ -46,3 +48,16 @@ for name, url in shopify_stores:
     print(f"  Got {len(rows)} variants")
 
 print(f"\nTotal rows: {len(all_rows)}")
+
+def clean_rows(rows):
+    cleaned = []
+    for row in rows:
+        row['product_name'] = row['product_name'].strip()
+        row['variant'] = None if row['variant'] == 'Default Title' else row['variant'].strip()
+        cleaned.append(row)
+    return cleaned
+
+all_rows = clean_rows(all_rows)
+
+for row in all_rows[:3]:
+    print(row)
